@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAGASEL あそびば</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #fff; color: #2b2b2b; font-family: "Hiragino Maru Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; }
+  h1 { text-align: center; font-size: 26px; margin: 28px 0 20px; letter-spacing: 0.08em; color: #1f6f99; }
+  .list { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 920px; margin: 0 auto; padding: 0 16px 48px; }
+  @media (min-width: 720px) { .list { grid-template-columns: 1fr 1fr; } }
+  .card { border: 1px solid #e3e3e3; border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
+  .card img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+  .body { padding: 14px 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+  .name { font-size: 20px; font-weight: 700; margin: 0; }
+  .desc { font-size: 15px; margin: 0; color: #555; }
+  .play { display: block; margin-top: 6px; text-align: center; text-decoration: none; color: #fff; background: #3fa9e0; border-bottom: 4px solid #1f6f99; border-radius: 12px; padding: 14px 0; font-size: 20px; font-weight: 700; }
+  .play:active { transform: translateY(2px); border-bottom-width: 2px; }
+</style>
+</head>
+<body>
+<h1>SAGASEL あそびば</h1>
+<div class="list">
+  <div class="card">
+    <img src="hikkonuki/thumb.jpg" alt="飛脚もぐら ひっこぬき">
+    <div class="body">
+      <p class="name">飛脚もぐら ひっこぬき</p>
+      <p class="desc">丸い時計が消える前にもぐらを押して、引っこ抜いて仲間にしよう</p>
+      <a class="play" href="hikkonuki/" target="_blank" rel="noopener">あそぶ</a>
+    </div>
+  </div>
+  <div class="card">
+    <img src="horinuke/thumb.jpg" alt="ほりぬけ">
+    <div class="body">
+      <p class="name">ほりぬけ</p>
+      <p class="desc">棒でボールを打ち返して、土をぜんぶ掘ろう</p>
+      <a class="play" href="horinuke/" target="_blank" rel="noopener">あそぶ</a>
+    </div>
+  </div>
+  <div class="card">
+    <img src="mitsuzoroe/thumb.jpg" alt="飛脚もぐらの三つそろえ">
+    <div class="body">
+      <p class="name">飛脚もぐらの三つそろえ</p>
+      <p class="desc">同じ絵を三つそろえて、牌を消していこう</p>
+      <a class="play" href="mitsuzoroe/" target="_blank" rel="noopener">あそぶ</a>
+    </div>
+  </div>
+  <div class="card">
+    <img src="todoke/thumb.jpg" alt="飛脚はしる">
+    <div class="body">
+      <p class="name">飛脚はしる</p>
+      <p class="desc">道をかえて じゃまな物をよけ、書状を拾って宿場を駆けぬけよう</p>
+      <a class="play" href="todoke/" target="_blank" rel="noopener">あそぶ</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
