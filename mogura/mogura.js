@@ -45,7 +45,7 @@
 #clip{position:absolute;left:50%;bottom:calc(var(--w)*0.41);width:calc(var(--w)*1.3);transform:translateX(-50%);height:420px;overflow:hidden;z-index:2}
 #mole{position:absolute;left:50%;bottom:0;width:calc(var(--w)*0.9);transform:translateX(-50%) translateY(100%);transition:transform .45s cubic-bezier(.2,.9,.3,1.2);pointer-events:auto;cursor:pointer;display:none}
 #pieces{width:calc(var(--w)*0.8);bottom:60px;display:none;z-index:3;opacity:.95}
-#bubble{position:absolute;left:-30px;bottom:calc(var(--w)*1.5);background:#fff;border:2px solid #3aa0d8;border-radius:16px;padding:9px 16px;font-size:17px;font-weight:bold;color:#1a4a6a;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15);display:none;z-index:4;pointer-events:auto;cursor:pointer}
+#bubble{position:absolute;left:-30px;bottom:calc(var(--w)*1.1);background:#fff;border:2px solid #3aa0d8;border-radius:16px;padding:9px 16px;font-size:17px;font-weight:bold;color:#1a4a6a;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15);display:none;z-index:4;pointer-events:auto;cursor:pointer}
 #bubble:after{content:"";position:absolute;left:70px;bottom:-10px;border:10px solid transparent;border-top-color:#3aa0d8;border-bottom:0}
 @media (max-width:700px){#bubble{font-size:14px}#click{font-size:13px}}
 #click{position:absolute;right:100%;margin-right:14px;bottom:calc(var(--w)*0.62);background:#ff7a1a;color:#fff;font-weight:bold;font-size:16px;padding:8px 14px;border-radius:999px;white-space:nowrap;box-shadow:0 3px 8px rgba(0,0,0,.25);display:none;z-index:4;pointer-events:auto;cursor:pointer;animation:poke 0.9s ease-in-out infinite}
@@ -61,16 +61,16 @@
       const $ = id => root.getElementById(id);
       const stage = $('stage'), spot = $('spot'), mound = $('mound'), mole = $('mole'), pieces = $('pieces'), bubble = $('bubble'), ridge = $('ridge'), click = $('click');
       pieces.src = src('t8');
-      let clicked = false;
       const setMound = n => { if (n) { mound.src = src('t' + n); mound.style.display = 'block'; } else mound.style.display = 'none'; };
       const face = n => { mole.src = src('m' + n); };
       const moleUp = () => { mole.style.display = 'block'; requestAnimationFrame(() => { mole.style.transform = 'translateX(-50%) translateY(38%)'; }); };
       const moleDown = () => { mole.style.transform = 'translateX(-50%) translateY(100%)'; };
       const burst = async () => { pieces.style.display = 'block'; await sleep(250); pieces.style.display = 'none'; };
-      const go = () => { if (clicked) return; clicked = true; location.href = href; };
+      // 何度押してもあそびばへ移る（戻るボタンで戻ってきたあとも押せる）
+      const go = () => { location.href = href; };
       mole.addEventListener('click', go); bubble.addEventListener('click', go); click.addEventListener('click', go);
       const endX = () => { const w = parseFloat(getComputedStyle(spot).width); const r = window.innerWidth <= 700 ? rightSP : rightPC; return Math.max(window.innerWidth - r - w, 10); };
-      const chk = () => !clicked && this.isConnected;
+      const chk = () => this.isConnected;
 
       const preload = () => Object.keys(IMG).forEach(k => { const i = new Image(); i.src = src(k); });
 
