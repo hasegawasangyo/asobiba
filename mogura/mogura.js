@@ -1,5 +1,5 @@
-/* 飛脚もぐら：Wixカスタム要素
-   使い方：Wix「カスタム要素」で Server URL にこのファイルのURL、Tag Name に hikyaku-mogura
+/* 飛脚もぐら（Wixのカスタムコードで読み込む）
+   読み込んだあと <hikyaku-mogura> を body に1つ足すと動く
    属性（省略可）: href="/asobiba"  wait="60"  right="275"  right-mobile="150"
    動作確認：ページURLの末尾に ?mogura=now を付けると待ち時間なしで出る */
 (function () {
@@ -22,6 +22,8 @@
   class HikyakuMogura extends HTMLElement {
     connectedCallback() {
       if (this._started) return; this._started = true;
+      // ページを移っても2匹にならないように（最初の1匹だけ動かす）
+      if (window.__hikyakuMoguraStarted) return; window.__hikyakuMoguraStarted = true;
       const href = this.getAttribute('href') || '/asobiba';
       const wait = Number(this.getAttribute('wait') || 60) * 1000;
       const rightPC = Number(this.getAttribute('right') || 275);
@@ -34,27 +36,30 @@
       root.innerHTML = `
 <style>
 :host{all:initial}
-#stage{position:fixed;left:0;right:0;bottom:0;height:340px;pointer-events:none;overflow:hidden;z-index:9000;--w:130px;font-family:sans-serif}
-@media (max-width:700px){#stage{--w:100px}}
+#stage{position:fixed;left:0;right:0;bottom:0;height:420px;pointer-events:none;overflow:hidden;z-index:9000;--w:165px;font-family:sans-serif}
+@media (max-width:700px){#stage{--w:120px}}
 #ridge{position:absolute;bottom:0;height:calc(var(--w)*0.26);width:0;background:url(${src('ridge')}) repeat-x left bottom / auto 100%;transition:opacity 1.2s}
-#spot{position:absolute;bottom:0;left:6px;width:var(--w);height:340px}
+#spot{position:absolute;bottom:0;left:6px;width:var(--w);height:420px}
 #mound,#pieces{position:absolute;left:50%;bottom:0;transform:translateX(-50%)}
 #mound{width:var(--w);display:none;z-index:1}
-#clip{position:absolute;left:50%;bottom:calc(var(--w)*0.41);width:calc(var(--w)*1.3);transform:translateX(-50%);height:340px;overflow:hidden;z-index:2}
+#clip{position:absolute;left:50%;bottom:calc(var(--w)*0.41);width:calc(var(--w)*1.3);transform:translateX(-50%);height:420px;overflow:hidden;z-index:2}
 #mole{position:absolute;left:50%;bottom:0;width:calc(var(--w)*0.9);transform:translateX(-50%) translateY(100%);transition:transform .45s cubic-bezier(.2,.9,.3,1.2);pointer-events:auto;cursor:pointer;display:none}
 #pieces{width:calc(var(--w)*0.8);bottom:60px;display:none;z-index:3;opacity:.95}
-#bubble{position:absolute;left:-30px;bottom:200px;background:#fff;border:2px solid #3aa0d8;border-radius:16px;padding:8px 14px;font-size:15px;color:#1a4a6a;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15);display:none;z-index:4;pointer-events:auto;cursor:pointer}
+#bubble{position:absolute;left:-30px;bottom:calc(var(--w)*1.5);background:#fff;border:2px solid #3aa0d8;border-radius:16px;padding:9px 16px;font-size:17px;font-weight:bold;color:#1a4a6a;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15);display:none;z-index:4;pointer-events:auto;cursor:pointer}
 #bubble:after{content:"";position:absolute;left:70px;bottom:-10px;border:10px solid transparent;border-top-color:#3aa0d8;border-bottom:0}
-@media (max-width:700px){#bubble{font-size:13px;bottom:160px}}
+@media (max-width:700px){#bubble{font-size:14px}#click{font-size:13px}}
+#click{position:absolute;right:100%;margin-right:14px;bottom:calc(var(--w)*0.62);background:#ff7a1a;color:#fff;font-weight:bold;font-size:16px;padding:8px 14px;border-radius:999px;white-space:nowrap;box-shadow:0 3px 8px rgba(0,0,0,.25);display:none;z-index:4;pointer-events:auto;cursor:pointer;animation:poke 0.9s ease-in-out infinite}
+@keyframes poke{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
 </style>
 <div id="stage"><div id="ridge"></div><div id="spot">
   <div id="clip"><img id="mole" alt="飛脚もぐら"></div>
   <img id="mound" alt="">
   <img id="pieces" alt="">
   <div id="bubble">ちょっと遊んでく？</div>
+  <div id="click">ここをクリック！ ▶</div>
 </div></div>`;
       const $ = id => root.getElementById(id);
-      const stage = $('stage'), spot = $('spot'), mound = $('mound'), mole = $('mole'), pieces = $('pieces'), bubble = $('bubble'), ridge = $('ridge');
+      const stage = $('stage'), spot = $('spot'), mound = $('mound'), mole = $('mole'), pieces = $('pieces'), bubble = $('bubble'), ridge = $('ridge'), click = $('click');
       pieces.src = src('t8');
       let clicked = false;
       const setMound = n => { if (n) { mound.src = src('t' + n); mound.style.display = 'block'; } else mound.style.display = 'none'; };
@@ -63,7 +68,7 @@
       const moleDown = () => { mole.style.transform = 'translateX(-50%) translateY(100%)'; };
       const burst = async () => { pieces.style.display = 'block'; await sleep(250); pieces.style.display = 'none'; };
       const go = () => { if (clicked) return; clicked = true; location.href = href; };
-      mole.addEventListener('click', go); bubble.addEventListener('click', go);
+      mole.addEventListener('click', go); bubble.addEventListener('click', go); click.addEventListener('click', go);
       const endX = () => { const w = parseFloat(getComputedStyle(spot).width); const r = window.innerWidth <= 700 ? rightSP : rightPC; return Math.max(window.innerWidth - r - w, 10); };
       const chk = () => !clicked && this.isConnected;
 
@@ -93,9 +98,9 @@
         setMound(1); await sleep(300); setMound(2); await sleep(300); setMound(3); await sleep(300); setMound(4);
         face(1); moleUp(); await sleep(500); if (!chk()) return;
         face(3); await sleep(600); face(4); await sleep(700); if (!chk()) return;
-        face(5); bubble.style.display = 'block';
+        face(5); bubble.style.display = 'block'; click.style.display = 'block';
         for (let i = 0; i < 15; i++) { await sleep(1000); if (!chk()) return; }
-        bubble.style.display = 'none'; face(6); await sleep(900); if (!chk()) return;
+        bubble.style.display = 'none'; click.style.display = 'none'; face(6); await sleep(900); if (!chk()) return;
         moleDown(); await sleep(350); burst(); setMound(7); await sleep(800);
         ridge.style.opacity = '0'; await sleep(1300); setMound(0); ridge.style.width = '0px';
         stage.remove();
